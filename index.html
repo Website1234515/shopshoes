@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShoeVerse - Shop Shoes Online</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <h1>ShoeVerse</h1>
+    <p>Stylish, Durable, Affordable Footwear</p>
+  </header>
+
+  <section class="hero">
+    <img src="hero-banner.jpg" alt="Shoes Banner">
+    <h2>Step Into Style</h2>
+    <p>Discover our 2025 premium collection</p>
+    <a class="whatsapp-ad" href="https://wa.me/1234567890?text=I'm%20interested%20in%20your%20shoe%20collection!" target="_blank">Message on WhatsApp</a>
+  </section>
+
+  <section class="products">
+    <h2>Shop Our Bestsellers</h2>
+    <div class="product-list">
+      <div class="product" data-name="SportX Runner" data-price="89.99">
+        <img src="shoe1.jpg" alt="SportX Runner">
+        <h3>SportX Runner</h3>
+        <p>$89.99</p>
+        <button onclick="addToCart(this)">Add to Cart</button>
+      </div>
+      <div class="product" data-name="Urban Walk" data-price="74.99">
+        <img src="shoe2.jpg" alt="Urban Walk">
+        <h3>Urban Walk</h3>
+        <p>$74.99</p>
+        <button onclick="addToCart(this)">Add to Cart</button>
+      </div>
+      <div class="product" data-name="Elegant Step" data-price="99.99">
+        <img src="shoe3.jpg" alt="Elegant Step">
+        <h3>Elegant Step</h3>
+        <p>$99.99</p>
+        <button onclick="addToCart(this)">Add to Cart</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="cart-summary">
+    <h2>Your Cart</h2>
+    <ul id="cart-items"></ul>
+    <p id="total">Total: $0.00</p>
+    <button onclick="checkout()">Checkout</button>
+  </section>
+
+  <section class="contact">
+    <h2>Contact Us</h2>
+    <form id="contact-form">
+      <input type="text" name="user_name" placeholder="Your Name" required />
+      <input type="email" name="user_email" placeholder="Your Email" required />
+      <textarea name="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Email</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 ShoeVerse. All rights reserved.</p>
+  </footer>
+
+  <script>
+    emailjs.init("YOUR_EMAILJS_USER_ID"); // Replace with your EmailJS user ID
+
+    const cart = [];
+
+    function addToCart(button) {
+      const product = button.parentElement;
+      const name = product.getAttribute("data-name");
+      const price = parseFloat(product.getAttribute("data-price"));
+      cart.push({ name, price });
+      updateCart();
+    }
+
+    function updateCart() {
+      const list = document.getElementById("cart-items");
+      const total = document.getElementById("total");
+      list.innerHTML = "";
+      let sum = 0;
+      cart.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+        list.appendChild(li);
+        sum += item.price;
+      });
+      total.textContent = `Total: $${sum.toFixed(2)}`;
+    }
+
+    function checkout() {
+      const summary = cart.map(item => `${item.name} - $${item.price.toFixed(2)}`).join("\n");
+      const message = encodeURIComponent("I would like to order:\n" + summary);
+      window.open(`https://wa.me/1234567890?text=${message}`, "_blank");
+
+      alert("Order placed! Summary:\n" + summary);
+    }
+
+    document.getElementById("contact-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
+        .then(() => alert("Message sent!"))
+        .catch(error => alert("Failed to send message: " + error));
+    });
+  </script>
+</body>
+</html>
